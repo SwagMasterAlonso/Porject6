@@ -8,11 +8,21 @@ public class Node {
 	String name;
 	List<Node> edges;
 	double[][] cpt;
+	VariableType type;
 
-	Node(String nameObj, double[] arrayVal) {
+	Node(String nameObj) {
 		this.edges = new ArrayList<Node>();
 		this.name = nameObj;
-		createCPT(arrayVal);
+		this.cpt = null;
+		this.type = null;
+	}
+
+	public VariableType getType() {
+		return type;
+	}
+
+	public void setType(VariableType type) {
+		this.type = type;
 	}
 
 	public String getName() {
