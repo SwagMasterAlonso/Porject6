@@ -5,13 +5,13 @@ import java.util.List;
 Alonso
 */
 public class Node {
-	int id;
+	String name;
 	List<Node> edges;
 	double[][] cpt;
 
-	Node(int id, double[][] cpt) {
+	Node(String nameObj, double[][] cpt) {
 		this.edges = new ArrayList<Node>();
-		this.id = id;
+		this.name = nameObj;
 		this.cpt = cpt;
 	}
 }
