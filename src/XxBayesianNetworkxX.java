@@ -1,11 +1,11 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.util.Iterator;
 
 /**
 Alonso
  */
 public class XxBayesianNetworkxX {
-
 
 
 	public static void main(String[] args) {
@@ -131,14 +131,36 @@ public class XxBayesianNetworkxX {
 
 	 }
 
-	 public static void assignStatus(String fileName) {
+	 public static void assignStatus(String fileName, Network bNet) {
 		 String line;
 		 BufferedReader br = null;
+		 Node temp;
+		 int i = 0;
 		 try {
 			 br = new BufferedReader(new FileReader(fileName));
 			 while ((line = br.readLine()) != null) {
 				 String[] fields = line.split(",");
-				 //for (Iterator<Node> it = bayesNet.)
+				 for (Iterator<Node> it = bNet.getBayesNetNodes().iterator(); it.hasNext() && i < fields.length; i++) {
+					 temp = it.next();
+					 switch (fields[i]) {
+						 case "t":
+							 temp.setType(VariableType.EVIDENCE);
+							 temp.setObservedVal(true);
+							 continue;
+						 case "f":
+							 temp.setType(VariableType.EVIDENCE);
+							 temp.setObservedVal(false);
+							 continue;
+						 case "-":
+							 temp.setType(VariableType.UNKNOWN);
+							 temp.setObservedVal(null);
+							 continue;
+						 case "q":
+							 temp.setType(VariableType.QUERY);
+							 temp.setObservedVal(null);
+							 continue;
+					 }
+				 }
 			 }
 		 }catch(Exception e){
 			 System.err.println("Exception"+e);
