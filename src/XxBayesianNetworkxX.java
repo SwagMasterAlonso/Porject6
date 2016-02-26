@@ -24,6 +24,9 @@ public class XxBayesianNetworkxX {
 		createNodes(fileName,BayesNet);
 		populateNodes(fileName,BayesNet);
 
+		
+		System.out.println("FinalN Nodes Are");
+		System.out.println(BayesNet.getBayesNetNodes());
 	}
 
 
@@ -70,18 +73,28 @@ public class XxBayesianNetworkxX {
 			System.out.println("Trying");
 			br = new BufferedReader(new FileReader(fileName));
 			while ((line = br.readLine()) != null) {
-				System.out.println("Redoing");
+			//	System.out.println("Redoing");
 				String[] fields = line.split(" ");
 				fields = line.split(":");
 				String parent = getParentData(fields[1]);
+			//	System.out.println(parent);
 				String[] parents = parent.split(" ");
-				System.out.println(parent);
+				//System.out.println(parent);
+				
 				
 				for(String s:parents){
+				
+					
+					System.out.println("In for loop: "+s);
+
+					if(!s.equals("")){
 				getNode(s,bayesNet).getEdges().add(getNode(fields[0],bayesNet));
+					}
 				}
-				//System.out.println("Parents are");
-				//System.out.println(getNode(fields[0],bayesNet));
+				
+				System.out.println("Out of for loop");
+				System.out.println("Children are");
+				System.out.println(getNode(fields[0],bayesNet));
 
 			}
 		}catch(Exception e){};
