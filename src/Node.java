@@ -72,4 +72,8 @@ public class Node {
 				break;
 		}
 	}
+	
+	public String toString(){
+		return this.name+this.edges;
+	}
 }

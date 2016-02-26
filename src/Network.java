@@ -6,7 +6,20 @@ Alonso
 */
 public class Network {
 
-	List<Node> BayesNetNode = new ArrayList<Node>();
+	List<Node> BayesNetNodes = new ArrayList<Node>();
+
+	
+	
+	
+	
+	
+	public List<Node> getBayesNetNodes() {
+		return BayesNetNodes;
+	}
+
+	public void setBayesNetNodes(List<Node> bayesNetNodes) {
+		BayesNetNodes = bayesNetNodes;
+	}
 	
 	
 	
