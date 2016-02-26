@@ -23,10 +23,11 @@ public class XxBayesianNetworkxX {
 
 		createNodes(fileName,BayesNet);
 		populateNodes(fileName,BayesNet);
+		assignProbabilities(fileName,BayesNet);
 
 
-		System.out.println("FinalN Nodes Are");
-		System.out.println(BayesNet.getBayesNetNodes());
+	//	System.out.println("FinalN Nodes Are");
+	//	System.out.println(BayesNet.getBayesNetNodes());
 	}
 
 
@@ -65,37 +66,42 @@ public class XxBayesianNetworkxX {
 
 	public static void populateNodes(String fileName,Network bayesNet){
 
-	//	System.out.println("In populate");
+		//	System.out.println("In populate");
 		String line;
 		BufferedReader br = null;
 		try {
 
-			System.out.println("Trying");
+	//		System.out.println("Trying");
 			br = new BufferedReader(new FileReader(fileName));
 			while ((line = br.readLine()) != null) {
-			//	System.out.println("Redoing");
+	//			System.out.println("Redoing");
 				String[] fields = line.split(" ");
 				fields = line.split(":");
 				String parent = getParentData(fields[1]);
-			//	System.out.println(parent);
+				//	System.out.println(parent);
 				String[] parents = parent.split(" ");
 				//System.out.println(parent);
 
+				String[] probabilities = getProbs(line).split(" ");
 
 				for(String s:parents){
 
 
-					System.out.println("In for loop: "+s);
+					//					System.out.println("In for loop: "+s);
 
 					if(!s.equals("")){
-				getNode(s,bayesNet).getEdges().add(getNode(fields[0],bayesNet));
+						getNode(s,bayesNet).getEdges().add(getNode(fields[0],bayesNet));
 					}
 				}
+				
+				getNode(fields[0],bayesNet).createCPT(probabilities);
+				getNode(fields[0],bayesNet).printCPT(probabilities);
 
-				System.out.println("Out of for loop");
-				System.out.println("Children are");
-				System.out.println(getNode(fields[0],bayesNet));
-
+				//				System.out.println("Out of for loop");
+				//				System.out.println("Children are");
+				//				System.out.println(getNode(fields[0],bayesNet));
+		
+				
 			}
 		}catch(Exception e){};
 
@@ -107,65 +113,141 @@ public class XxBayesianNetworkxX {
 
 
 
-
 	}
 
-	 public static String getParentData(String string){
-	        return string.substring(string.indexOf('[')+1,string.indexOf(']'));
-	    }
 
-	 public static Node getNode(String nodeString,Network bayesNet){
+	public static double[][] getCPT(int size,String[] probs){
 
-		 for(Node node: bayesNet.getBayesNetNodes()){
-			 if(nodeString.equals(node.getName())){
+		double[][] cpt = null;
+
+		switch(size) {
+		case 2:
+			cpt = new double[1][2];
+			cpt[0][0] = Double.parseDouble(probs[0]);
+			cpt[0][1] = Double.parseDouble(probs[1]);
+		case 4:
+			cpt = new double[2][2];
+			for (int i = 0; i < 2; i++) {
+				for (int j = 0; j < 2; j++) {
+					for(int k = 0; k < size;k++){
+						cpt[i][j] = Double.parseDouble(probs[k]);
+					}
+				}
+			}
+		case 8:
+			cpt = new double[4][2];
+			for (int i = 0; i < 4; i++) {
+				for (int j = 0; j < 2; j++) {
+					for(int k = 0; k < size;k++){
+						cpt[i][j] = Double.parseDouble(probs[k]);
+					}				}
+			}
+		default:
+			System.out.println("This array is not valid size.");
+			break;
+		}
+		
+		return cpt;
+	}
+	public static String getParentData(String string){
+		return string.substring(string.indexOf('[')+1,string.indexOf(']'));
+	}
+
+
+
+	public static Node getNode(String nodeString,Network bayesNet){
+
+		for(Node node: bayesNet.getBayesNetNodes()){
+			if(nodeString.equals(node.getName())){
 				// System.out.println("Worked");
-				 return node;
+				return node;
 
-			 }
-		 }
+			}
+		}
 		// System.out.println("Returning null");
 		return null;
 
 
 
 
-	 }
+	}
 
-	 public static void assignStatus(String fileName, Network bNet) {
-		 String line;
-		 BufferedReader br = null;
-		 Node temp;
-		 int i = 0;
-		 try {
-			 br = new BufferedReader(new FileReader(fileName));
-			 while ((line = br.readLine()) != null) {
-				 String[] fields = line.split(",");
-				 for (Iterator<Node> it = bNet.getBayesNetNodes().iterator(); it.hasNext() && i < fields.length; i++) {
-					 temp = it.next();
-					 switch (fields[i]) {
-						 case "t":
-							 temp.setType(VariableType.EVIDENCE);
-							 temp.setObservedVal(true);
-							 continue;
-						 case "f":
-							 temp.setType(VariableType.EVIDENCE);
-							 temp.setObservedVal(false);
-							 continue;
-						 case "-":
-							 temp.setType(VariableType.UNKNOWN);
-							 temp.setObservedVal(null);
-							 continue;
-						 case "q":
-							 temp.setType(VariableType.QUERY);
-							 temp.setObservedVal(null);
-							 continue;
-					 }
-				 }
-			 }
-		 }catch(Exception e){
-			 System.err.println("Exception"+e);
-		 };
 
-	 }
+	public static void assignProbabilities(String fileName,Network bNet){
+		String line;
+		BufferedReader br = null;
+		try {
+			br = new BufferedReader(new FileReader(fileName));
+			while ((line = br.readLine()) != null) {
+				//System.out.println("Reading");
+				//String[] fields = line.split(" ");
+				//System.out.println(fields[2]);
+				System.out.println("Line is: "+line);
+
+				String[] probabilities = getProbs(line).split(" ");
+
+
+
+				//System.out.println("Probs are " +probabilities);
+
+			}
+		}catch(Exception e){};
+	}
+
+
+
+	public static void assignStatus(String fileName, Network bNet) {
+		String line;
+		BufferedReader br = null;
+		Node temp;
+		int i = 0;
+		try {
+			br = new BufferedReader(new FileReader(fileName));
+			while ((line = br.readLine()) != null) {
+				String[] fields = line.split(",");
+				for (Iterator<Node> it = bNet.getBayesNetNodes().iterator(); it.hasNext() && i < fields.length; i++) {
+					temp = it.next();
+					switch (fields[i]) {
+					case "t":
+						temp.setType(VariableType.EVIDENCE);
+						temp.setObservedVal(true);
+						continue;
+					case "f":
+						temp.setType(VariableType.EVIDENCE);
+						temp.setObservedVal(false);
+						continue;
+					case "-":
+						temp.setType(VariableType.UNKNOWN);
+						temp.setObservedVal(null);
+						continue;
+					case "q":
+						temp.setType(VariableType.QUERY);
+						temp.setObservedVal(null);
+						continue;
+					}
+				}
+			}
+		}catch(Exception e){
+			System.err.println("Exception"+e);
+		};
+
+	}
+
+	public static String getProbs(String string){
+	//	System.out.println("Here");
+		string = string + "*";
+		string = string.replace(".", ",");
+	//	System.out.println(string);
+		int place1 = string.indexOf(",")-1;
+	//	System.out.println("Place 1 is: "+place1);
+		int place2 = string.indexOf("*")-1;
+	//	System.out.println("Place 2 is: "+place2);
+
+		String string2 = string.substring(place1, place2);
+		string2 = string2.replace(",", ".");
+
+		//System.out.println("SubString is " + string2);
+		return string2;
+	}
 
 }
