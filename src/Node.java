@@ -9,14 +9,23 @@ public class Node {
 	List<Node> edges;
 	double[][] cpt;
 	VariableType type;
+	Boolean observedVal;
 
-	Node(String nameObj) {
-		this.edges = new ArrayList<Node>();
-		this.name = nameObj;
-		this.cpt = null;
-		this.type = null;
-	}
+ 	Node(String nameObj) {
+ 		this.edges = new ArrayList<Node>();
+ 		this.name = nameObj;
+ 		this.cpt = null;
+ 		this.type = null;
+ 		this.observedVal = null;
+ 	}
 
+ 	public Boolean getObservedVal() {
+ 		return observedVal;
+ 	}
+
+ 	public void setObservedVal(Boolean observedVal) {
+ 		this.observedVal = observedVal;
+ 	}
 	public VariableType getType() {
 		return type;
 	}
@@ -72,7 +81,7 @@ public class Node {
 				break;
 		}
 	}
-	
+
 	public String toString(){
 		return this.name+this.edges;
 	}

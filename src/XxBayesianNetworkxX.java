@@ -24,7 +24,7 @@ public class XxBayesianNetworkxX {
 		createNodes(fileName,BayesNet);
 		populateNodes(fileName,BayesNet);
 
-		
+
 		System.out.println("FinalN Nodes Are");
 		System.out.println(BayesNet.getBayesNetNodes());
 	}
@@ -64,12 +64,12 @@ public class XxBayesianNetworkxX {
 
 
 	public static void populateNodes(String fileName,Network bayesNet){
-		
+
 	//	System.out.println("In populate");
 		String line;
 		BufferedReader br = null;
 		try {
-			
+
 			System.out.println("Trying");
 			br = new BufferedReader(new FileReader(fileName));
 			while ((line = br.readLine()) != null) {
@@ -80,55 +80,70 @@ public class XxBayesianNetworkxX {
 			//	System.out.println(parent);
 				String[] parents = parent.split(" ");
 				//System.out.println(parent);
-				
-				
+
+
 				for(String s:parents){
-				
-					
+
+
 					System.out.println("In for loop: "+s);
 
 					if(!s.equals("")){
 				getNode(s,bayesNet).getEdges().add(getNode(fields[0],bayesNet));
 					}
 				}
-				
+
 				System.out.println("Out of for loop");
 				System.out.println("Children are");
 				System.out.println(getNode(fields[0],bayesNet));
 
 			}
 		}catch(Exception e){};
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+
+
+
+
+
+
+
+
+
+
 	}
-	
+
 	 public static String getParentData(String string){
 	        return string.substring(string.indexOf('[')+1,string.indexOf(']'));
 	    }
-	 
+
 	 public static Node getNode(String nodeString,Network bayesNet){
-		 
+
 		 for(Node node: bayesNet.getBayesNetNodes()){
 			 if(nodeString.equals(node.getName())){
 				// System.out.println("Worked");
 				 return node;
-				 
+
 			 }
 		 }
 		// System.out.println("Returning null");
 		return null;
-		 
-		 
-		 
-		 
+
+
+
+
+	 }
+
+	 public static void assignStatus(String fileName) {
+		 String line;
+		 BufferedReader br = null;
+		 try {
+			 br = new BufferedReader(new FileReader(fileName));
+			 while ((line = br.readLine()) != null) {
+				 String[] fields = line.split(",");
+				 //for (Iterator<Node> it = bayesNet.)
+			 }
+		 }catch(Exception e){
+			 System.err.println("Exception"+e);
+		 };
+
 	 }
 
 }
