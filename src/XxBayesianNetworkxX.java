@@ -24,8 +24,10 @@ public class XxBayesianNetworkxX {
 		createNodes(fileName,BayesNet);
 		populateNodes(fileName,BayesNet);
 		assignProbabilities(fileName,BayesNet);
-
-
+		assignStatus("query1.txt", BayesNet);
+		for (Node n: BayesNet.getBayesNetNodes()) {
+			System.out.println("Node "+n.getName()+" have type "+n.getType()+" with observed value "+n.getObservedVal());
+		}
 	//	System.out.println("FinalN Nodes Are");
 	//	System.out.println(BayesNet.getBayesNetNodes());
 	}
@@ -225,6 +227,12 @@ public class XxBayesianNetworkxX {
 						temp.setType(VariableType.QUERY);
 						temp.setObservedVal(null);
 						continue;
+					case "?":
+						temp.setType(VariableType.QUERY);
+						temp.setObservedVal(null);
+						continue;
+					default:
+						System.out.println("Unknown character was read in.");
 					}
 				}
 			}
