@@ -108,34 +108,34 @@ public class Node {
 
 		System.out.println("Printing");
 		switch(size) {
-		case 2:
-			System.out.print(this.cpt[0][0] +" ");
-			System.out.print(this.cpt[0][1]);
-			System.out.println("");
-			break;
-		case 4:
-		//	System.out.println("in 4");
-			for (int i = 0; i < 2; i++) {
-				for (int j = 0; j < 2; j++) {
-					System.out.print(this.cpt[i][j] +" ");
-
-				}
+			case 2:
+				System.out.print(this.cpt[0][0] +" ");
+				System.out.print(this.cpt[0][1]);
 				System.out.println("");
-			}
-	//		System.out.println("out 4");
+				break;
+			case 4:
+				//	System.out.println("in 4");
+				for (int i = 0; i < 2; i++) {
+					for (int j = 0; j < 2; j++) {
+						System.out.print(this.cpt[i][j] +" ");
 
-			break;
-		case 8:
-			for (int i = 0; i < 4; i++) {
-				for (int j = 0; j < 2; j++) {
+					}
+					System.out.println("");
+				}
+				//		System.out.println("out 4");
+
+				break;
+			case 8:
+				for (int i = 0; i < 4; i++) {
+					for (int j = 0; j < 2; j++) {
 						System.out.print(this.cpt[i][j]+" ");
 					}
-				System.out.println("");
-			}
-			break;
-		default:
-			System.out.println("This array is not valid size.");
-			break;
+					System.out.println("");
+				}
+				break;
+			default:
+				System.out.println("This array is not valid size.");
+				break;
 		}
 	}
 

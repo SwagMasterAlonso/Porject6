@@ -93,15 +93,15 @@ public class XxBayesianNetworkxX {
 						getNode(s,bayesNet).getEdges().add(getNode(fields[0],bayesNet));
 					}
 				}
-				
+
 				getNode(fields[0],bayesNet).createCPT(probabilities);
 				getNode(fields[0],bayesNet).printCPT(probabilities);
 
 				//				System.out.println("Out of for loop");
 				//				System.out.println("Children are");
 				//				System.out.println(getNode(fields[0],bayesNet));
-		
-				
+
+
 			}
 		}catch(Exception e){};
 
@@ -130,7 +130,7 @@ public class XxBayesianNetworkxX {
 			for (int i = 0; i < 2; i++) {
 				for (int j = 0; j < 2; j++) {
 					for(int k = 0; k < size;k++){
-						cpt[i][j] = Double.parseDouble(probs[k]);
+					cpt[i][j] = Double.parseDouble(probs[k]);
 					}
 				}
 			}
@@ -140,13 +140,14 @@ public class XxBayesianNetworkxX {
 				for (int j = 0; j < 2; j++) {
 					for(int k = 0; k < size;k++){
 						cpt[i][j] = Double.parseDouble(probs[k]);
-					}				}
+					}
+				}
 			}
 		default:
 			System.out.println("This array is not valid size.");
 			break;
 		}
-		
+
 		return cpt;
 	}
 	public static String getParentData(String string){
