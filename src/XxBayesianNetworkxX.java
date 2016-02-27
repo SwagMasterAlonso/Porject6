@@ -23,7 +23,7 @@ public class XxBayesianNetworkxX {
 
 		createNodes(fileName,BayesNet);
 		populateNodes(fileName,BayesNet);
-		assignProbabilities(fileName,BayesNet);
+		printProbabilities(fileName,BayesNet);
 		assignStatus("query1.txt", BayesNet);
 		for (Node n: BayesNet.getBayesNetNodes()) {
 			System.out.println("Node "+n.getName()+" have type "+n.getType()+" with observed value "+n.getObservedVal());
@@ -176,7 +176,7 @@ public class XxBayesianNetworkxX {
 	}
 
 
-	public static void assignProbabilities(String fileName,Network bNet){
+	public static void printProbabilities(String fileName,Network bNet){
 		String line;
 		BufferedReader br = null;
 		try {
@@ -257,6 +257,10 @@ public class XxBayesianNetworkxX {
 
 		//System.out.println("SubString is " + string2);
 		return string2;
+	}
+
+	public static void rejectionSampling(int numSamples, Network bNet) {
+
 	}
 
 }
