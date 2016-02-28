@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.Iterator;
+import java.util.Random;
 
 /**
 Alonso
@@ -23,11 +24,12 @@ public class XxBayesianNetworkxX {
 
 		createNodes(fileName,BayesNet);
 		populateNodes(fileName,BayesNet);
-		printProbabilities(fileName,BayesNet);
+		//printProbabilities(fileName,BayesNet);
 		assignStatus("query1.txt", BayesNet);
-		for (Node n: BayesNet.getBayesNetNodes()) {
-			System.out.println("Node "+n.getName()+" have type "+n.getType()+" with observed value "+n.getObservedVal());
-		}
+		prior_sample(BayesNet);
+//		for (Node n: BayesNet.getBayesNetNodes()) {
+//			System.out.println("Node "+n.getName()+" have type "+n.getType()+" with observed value "+n.getObservedVal());
+//		}
 	//	System.out.println("FinalN Nodes Are");
 	//	System.out.println(BayesNet.getBayesNetNodes());
 	}
@@ -97,7 +99,7 @@ public class XxBayesianNetworkxX {
 				}
 
 				getNode(fields[0],bayesNet).createCPT(probabilities);
-				getNode(fields[0],bayesNet).printCPT(probabilities);
+//				getNode(fields[0],bayesNet).printCPT(probabilities);
 
 				//				System.out.println("Out of for loop");
 				//				System.out.println("Children are");
@@ -261,6 +263,57 @@ public class XxBayesianNetworkxX {
 
 	public static void rejectionSampling(int numSamples, Network bNet) {
 
+	}
+
+	private static Boolean[] prior_sample (Network bNet) {
+		Boolean[] event = new Boolean[bNet.getBayesNetNodes().size()];
+		double rndNum = 0.00;
+		Random seed = new Random();
+		Node temp;
+		for (Node n: bNet.getBayesNetNodes()) {
+
+			System.out.println("The random number is "+rndNum);
+			if (n.getEdges().size() == 2) {
+				temp = n.getEdges().get(0);
+				rndNum = seed.nextDouble();
+				if (temp.getEdges().size() != 0) {
+
+				}
+			}
+		}
+
+		return event;
+	}
+
+	private static Boolean computeParent(Random rnd, Node n) {
+		double random = 0.00;
+		Boolean result;
+		if (n.getEdges().size() == 0) {
+			random = rnd.nextDouble();
+			if (random >= 0 && random <= n.getCPTVal(0, 0)) {
+				return false;
+			} else {
+				return true;
+			}
+		} else if (n.getEdges().size() == 1) {
+			random = rnd.nextDouble();
+			result = computeParent(rnd, n);
+			if (result) {
+				if (random >= 0 && random <= n.getCPTVal(1, 0)) {
+					return false;
+				} else {
+					return true;
+				}
+			} else {
+				if (random >= 0 && random <= n.getCPTVal(0, 0)) {
+					return false;
+				} else {
+					return true;
+				}
+			}
+		} else {
+			return false;
+		}
 	}
 
 }
