@@ -26,12 +26,12 @@ public class XxBayesianNetworkxX {
 		populateNodes(fileName,BayesNet);
 		//printProbabilities(fileName,BayesNet);
 		assignStatus("query1.txt", BayesNet);
-		prior_sample(BayesNet);
+	//	prior_sample(BayesNet);
 //		for (Node n: BayesNet.getBayesNetNodes()) {
 //			System.out.println("Node "+n.getName()+" have type "+n.getType()+" with observed value "+n.getObservedVal());
 //		}
-	//	System.out.println("FinalN Nodes Are");
-	//	System.out.println(BayesNet.getBayesNetNodes());
+		System.out.println("FinalN Nodes Are");
+		System.out.println(BayesNet.getBayesNetNodes());
 	}
 
 
@@ -94,7 +94,7 @@ public class XxBayesianNetworkxX {
 					//					System.out.println("In for loop: "+s);
 
 					if(!s.equals("")){
-						getNode(s,bayesNet).getEdges().add(getNode(fields[0],bayesNet));
+						getNode(fields[0],bayesNet).getEdges().add(getNode(s,bayesNet));
 					}
 				}
 
