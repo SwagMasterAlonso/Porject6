@@ -26,7 +26,12 @@ public class XxBayesianNetworkxX {
 		populateNodes(fileName,BayesNet);
 		//printProbabilities(fileName,BayesNet);
 		assignStatus("query1.txt", BayesNet);
-	//	prior_sample(BayesNet);
+		Boolean[] newSam = prior_sample(BayesNet);
+		System.out.print("Boolean is ");
+		for (Boolean b: newSam) {
+			System.out.print(" "+b+" ");
+		}
+		System.out.println("");
 //		for (Node n: BayesNet.getBayesNetNodes()) {
 //			System.out.println("Node "+n.getName()+" have type "+n.getType()+" with observed value "+n.getObservedVal());
 //		}
