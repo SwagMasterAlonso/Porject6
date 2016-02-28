@@ -270,16 +270,94 @@ public class XxBayesianNetworkxX {
 		double rndNum = 0.00;
 		Random seed = new Random();
 		Node temp;
+		Boolean parent1, parent2;
+		int index = 0;
 		for (Node n: bNet.getBayesNetNodes()) {
 
 			System.out.println("The random number is "+rndNum);
 			if (n.getEdges().size() == 2) {
-				temp = n.getEdges().get(0);
 				rndNum = seed.nextDouble();
-				if (temp.getEdges().size() != 0) {
 
+				parent1 = computeParent(seed, n.getEdges().get(0));
+				parent2 = computeParent(seed, n.getEdges().get(1));
+				if (!parent1 && !parent2) {
+					if (rndNum >= 0 && rndNum <= n.getCPTVal(0, 0)) {
+						event[index] = false;
+						index++;
+						continue;
+					} else {
+						event[index] = true;
+						index++;
+						continue;
+					}
+				} else if (!parent1 && parent2) {
+					if (rndNum >= 0 && rndNum <= n.getCPTVal(1, 0)) {
+						event[index] = false;
+						index++;
+						continue;
+					} else {
+						event[index] = true;
+						index++;
+						continue;
+					}
+				} else if (parent1 && !parent2) {
+					if (rndNum >= 0 && rndNum <= n.getCPTVal(2, 0)) {
+						event[index] = false;
+						index++;
+						continue;
+					} else {
+						event[index] = true;
+						index++;
+						continue;
+					}
+				} else {
+					if (rndNum >= 0 && rndNum <= n.getCPTVal(3, 0)) {
+						event[index] = false;
+						index++;
+						continue;
+					} else {
+						event[index] = true;
+						index++;
+						continue;
+					}
+				}
+			} else if (n.getEdges().size() == 1) {
+				rndNum = seed.nextDouble();
+				parent1 = computeParent(seed, n.getEdges().get(0));
+				if (parent1) {
+					if (rndNum >= 0 && rndNum <= n.getCPTVal(1, 0)) {
+						event[index] = false;
+						index++;
+						continue;
+					} else {
+						event[index] = true;
+						index++;
+						continue;
+					}
+				} else {
+					if (rndNum >= 0 && rndNum <= n.getCPTVal(0, 0)) {
+						event[index] = false;
+						index++;
+						continue;
+					} else {
+						event[index] = true;
+						index++;
+						continue;
+					}
+				}
+			} else {
+				rndNum = seed.nextDouble();
+				if (rndNum >= 0 && rndNum <= n.getCPTVal(0, 0)) {
+					event[index] = false;
+					index++;
+					continue;
+				} else {
+					event[index] = true;
+					index++;
+					continue;
 				}
 			}
+
 		}
 
 		return event;
@@ -287,7 +365,7 @@ public class XxBayesianNetworkxX {
 
 	private static Boolean computeParent(Random rnd, Node n) {
 		double random = 0.00;
-		Boolean result;
+		Boolean result, result2;
 		if (n.getEdges().size() == 0) {
 			random = rnd.nextDouble();
 			if (random >= 0 && random <= n.getCPTVal(0, 0)) {
@@ -297,7 +375,7 @@ public class XxBayesianNetworkxX {
 			}
 		} else if (n.getEdges().size() == 1) {
 			random = rnd.nextDouble();
-			result = computeParent(rnd, n);
+			result = computeParent(rnd, n.getEdges().get(0));
 			if (result) {
 				if (random >= 0 && random <= n.getCPTVal(1, 0)) {
 					return false;
@@ -312,7 +390,34 @@ public class XxBayesianNetworkxX {
 				}
 			}
 		} else {
-			return false;
+			random = rnd.nextDouble();
+			result = computeParent(rnd, n.getEdges().get(0));
+			result2 = computeParent(rnd, n.getEdges().get(1));
+			if (!result && !result2) {
+				if (random >= 0 && random <= n.getCPTVal(0, 0)) {
+					return false;
+				} else {
+					return true;
+				}
+			} else if (!result && result2) {
+				if (random >= 0 && random <= n.getCPTVal(1, 0)) {
+					return false;
+				} else {
+					return true;
+				}
+			} else if (result && !result2) {
+				if (random >= 0 && random <= n.getCPTVal(2, 0)) {
+					return false;
+				} else {
+					return true;
+				}
+			} else {
+				if (random >= 0 && random <= n.getCPTVal(3, 0)) {
+					return false;
+				} else {
+					return true;
+				}
+			}
 		}
 	}
 
