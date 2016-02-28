@@ -26,10 +26,11 @@ public class XxBayesianNetworkxX {
 		populateNodes(fileName,BayesNet);
 		//printProbabilities(fileName,BayesNet);
 		assignStatus("query1.txt", BayesNet);
-	//	prior_sample(BayesNet);
-//		for (Node n: BayesNet.getBayesNetNodes()) {
-//			System.out.println("Node "+n.getName()+" have type "+n.getType()+" with observed value "+n.getObservedVal());
-//		}
+		//prior_sample(BayesNet);
+		rejectionSampling(20000,BayesNet);
+		//		for (Node n: BayesNet.getBayesNetNodes()) {
+		//			System.out.println("Node "+n.getName()+" have type "+n.getType()+" with observed value "+n.getObservedVal());
+		//		}
 		System.out.println("FinalN Nodes Are");
 		System.out.println(BayesNet.getBayesNetNodes());
 	}
@@ -75,10 +76,10 @@ public class XxBayesianNetworkxX {
 		BufferedReader br = null;
 		try {
 
-	//		System.out.println("Trying");
+			//		System.out.println("Trying");
 			br = new BufferedReader(new FileReader(fileName));
 			while ((line = br.readLine()) != null) {
-	//			System.out.println("Redoing");
+				//			System.out.println("Redoing");
 				String[] fields = line.split(" ");
 				fields = line.split(":");
 				String parent = getParentData(fields[1]);
@@ -99,7 +100,7 @@ public class XxBayesianNetworkxX {
 				}
 
 				getNode(fields[0],bayesNet).createCPT(probabilities);
-//				getNode(fields[0],bayesNet).printCPT(probabilities);
+				//				getNode(fields[0],bayesNet).printCPT(probabilities);
 
 				//				System.out.println("Out of for loop");
 				//				System.out.println("Children are");
@@ -134,7 +135,7 @@ public class XxBayesianNetworkxX {
 			for (int i = 0; i < 2; i++) {
 				for (int j = 0; j < 2; j++) {
 					for(int k = 0; k < size;k++){
-					cpt[i][j] = Double.parseDouble(probs[k]);
+						cpt[i][j] = Double.parseDouble(probs[k]);
 					}
 				}
 			}
@@ -245,14 +246,14 @@ public class XxBayesianNetworkxX {
 	}
 
 	public static String getProbs(String string){
-	//	System.out.println("Here");
+		//	System.out.println("Here");
 		string = string + "*";
 		string = string.replace(".", ",");
-	//	System.out.println(string);
+		//	System.out.println(string);
 		int place1 = string.indexOf(",")-1;
-	//	System.out.println("Place 1 is: "+place1);
+		//	System.out.println("Place 1 is: "+place1);
 		int place2 = string.indexOf("*")-1;
-	//	System.out.println("Place 2 is: "+place2);
+		//	System.out.println("Place 2 is: "+place2);
 
 		String string2 = string.substring(place1, place2);
 		string2 = string2.replace(",", ".");
@@ -261,9 +262,91 @@ public class XxBayesianNetworkxX {
 		return string2;
 	}
 
+
+	public static int queryIndex(Boolean[] event,Network bNet){
+
+		for(int i = 0; i < bNet.getBayesNetNodes().size();i++){
+
+
+			if(bNet.getBayesNetNodes().get(i).getType() == VariableType.QUERY){
+				return i;
+
+			}
+		}
+		return -1;
+	}
+
+
 	public static void rejectionSampling(int numSamples, Network bNet) {
 
+		int nonRejected = 0;
+		double[] vector = {0,0};
+
+		for(int i = 0; i < numSamples;i++){
+
+			Boolean[] event = new Boolean[bNet.getBayesNetNodes().size()];
+
+			event = prior_sample(bNet);
+
+
+			if(checkConsistency(event,bNet)){
+				nonRejected++;
+
+				int queryInd = queryIndex(event,bNet);
+
+				if(queryInd!= -1){
+
+					if(event[queryInd]){
+						//vector at 0 is true, vector at 1 is false
+						vector[0] +=1;
+					} else {
+						vector[1] +=1;
+					}
+				}
+
+
+
+
+
+
+
+			}
+
+		}
+
+		vector[0] /= nonRejected;
+		vector[1] /= nonRejected;
+		System.out.println("Non Rejected is: " +nonRejected);
+		System.out.println("Vector 0 is: "+vector[0]);
+		System.out.println("Vector 1 is: "+vector[1]);
+
+
+
 	}
+
+
+
+	private static Boolean checkConsistency(Boolean[] event, Network bNet){
+
+		for(int i = 0; i < event.length;i++){
+
+
+			if(bNet.getBayesNetNodes().get(i).getType() == VariableType.EVIDENCE){
+				if(bNet.getBayesNetNodes().get(i).getObservedVal() != event[i]){
+					return false;
+				}
+			}
+		}
+
+		return true;
+
+
+
+
+
+
+	}
+
 
 	private static Boolean[] prior_sample (Network bNet) {
 		Boolean[] event = new Boolean[bNet.getBayesNetNodes().size()];
@@ -274,7 +357,7 @@ public class XxBayesianNetworkxX {
 		int index = 0;
 		for (Node n: bNet.getBayesNetNodes()) {
 
-			System.out.println("The random number is "+rndNum);
+		//	System.out.println("The random number is "+rndNum);
 			if (n.getEdges().size() == 2) {
 				rndNum = seed.nextDouble();
 
