@@ -27,10 +27,11 @@ public class XxBayesianNetworkxX {
 		//printProbabilities(fileName,BayesNet);
 		assignStatus("query1.txt", BayesNet);
 		//prior_sample(BayesNet);
-		rejectionSampling(20000,BayesNet);
+		rejectionSampling(1000,BayesNet);
 		//		for (Node n: BayesNet.getBayesNetNodes()) {
 		//			System.out.println("Node "+n.getName()+" have type "+n.getType()+" with observed value "+n.getObservedVal());
 		//		}
+
 		System.out.println("FinalN Nodes Are");
 		System.out.println(BayesNet.getBayesNetNodes());
 	}
