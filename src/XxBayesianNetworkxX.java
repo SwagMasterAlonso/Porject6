@@ -8,7 +8,6 @@ Alonso
  */
 public class XxBayesianNetworkxX {
 
-	static double weight;
 	public static void main(String[] args) {
 		String fileName = null;
 		//get command line arguments, there should only be 2
@@ -505,21 +504,145 @@ public class XxBayesianNetworkxX {
 		}
 	}
 
-	public static Boolean[] weighted_sample(Network bNet) {
+	public static WeightedSample weighted_sample(Network bNet) {
+		Random rnd = new Random();
 		Boolean[] event = new Boolean[bNet.getBayesNetNodes().size()];
-
-		weight = 1;
+		WeightedSample sample;
+		Node n;
+		double weight = 1;
 		event = initializeEvent(event, bNet);
-		
-		for (Node n: bNet.getBayesNetNodes()) {
+
+		for (int i = 0; i < bNet.getBayesNetNodes().size(); i++) {
+			n = bNet.getBayesNetNodes().get(i);
 			if (n.getType() == VariableType.EVIDENCE) {
-				
+				weight *= computeProb(rnd, n);
+			} else {
+				event = sample(rnd, event, n, i);
 			}
 		}
+		sample = new WeightedSample(event, weight);
+		return sample;
+	}
 
+	private static Boolean[] sample (Random seed, Boolean[] event, Node n, int index) {
+		double rndNum = 0.00;
+		Node temp;
+		Boolean parent1, parent2;
+
+		//	System.out.println("The random number is "+rndNum);
+		if (n.getEdges().size() == 2) {
+			rndNum = seed.nextDouble();
+
+			parent1 = computeParent(seed, n.getEdges().get(0));
+			parent2 = computeParent(seed, n.getEdges().get(1));
+			if (!parent1 && !parent2) {
+				if (rndNum >= 0 && rndNum <= n.getCPTVal(0, 0)) {
+					event[index] = false;
+
+				} else {
+					event[index] = true;
+				}
+			} else if (!parent1 && parent2) {
+				if (rndNum >= 0 && rndNum <= n.getCPTVal(1, 0)) {
+					event[index] = false;
+				} else {
+					event[index] = true;
+				}
+			} else if (parent1 && !parent2) {
+				if (rndNum >= 0 && rndNum <= n.getCPTVal(2, 0)) {
+					event[index] = false;
+				} else {
+					event[index] = true;
+				}
+			} else {
+				if (rndNum >= 0 && rndNum <= n.getCPTVal(3, 0)) {
+					event[index] = false;
+				} else {
+					event[index] = true;
+				}
+			}
+		} else if (n.getEdges().size() == 1) {
+			rndNum = seed.nextDouble();
+			parent1 = computeParent(seed, n.getEdges().get(0));
+			if (parent1) {
+				if (rndNum >= 0 && rndNum <= n.getCPTVal(1, 0)) {
+					event[index] = false;
+				} else {
+					event[index] = true;
+				}
+			} else {
+				if (rndNum >= 0 && rndNum <= n.getCPTVal(0, 0)) {
+					event[index] = false;
+				} else {
+					event[index] = true;
+				}
+			}
+		} else {
+			rndNum = seed.nextDouble();
+			if (rndNum >= 0 && rndNum <= n.getCPTVal(0, 0)) {
+				event[index] = false;
+			} else {
+				event[index] = true;
+			}
+		}
 		return event;
 	}
 
+
+	private static double computeProb (Random seed, Node n) {
+		Boolean parent1, parent2;
+
+		if (n.getEdges().size() == 2) {
+			parent1 = computeParent(seed, n.getEdges().get(0));
+			parent2 = computeParent(seed, n.getEdges().get(1));
+			if (!parent1 && !parent2) {
+				if (n.getObservedVal()) {
+					return n.getCPTVal(0, 1);
+				} else {
+					return n.getCPTVal(0, 0);
+				}
+			} else if (!parent1 && parent2) {
+				if (n.getObservedVal()) {
+					return n.getCPTVal(1, 1);
+				} else {
+					return n.getCPTVal(1, 0);
+				}
+			} else if (parent1 && !parent2) {
+				if (n.getObservedVal()) {
+					return n.getCPTVal(2, 1);
+				} else {
+					return n.getCPTVal(2, 0);
+				}
+			} else {
+				if (n.getObservedVal()) {
+					return n.getCPTVal(3, 1);
+				} else {
+					return n.getCPTVal(3, 0);
+				}
+			}
+		} else if (n.getEdges().size() == 1) {
+			parent1 = computeParent(seed, n.getEdges().get(0));
+			if (parent1) {
+				if (n.getObservedVal()) {
+					return n.getCPTVal(1, 1);
+				} else {
+					return n.getCPTVal(1, 0);
+				}
+			} else {
+				if (n.getObservedVal()) {
+					return n.getCPTVal(0, 1);
+				} else {
+					return n.getCPTVal(0, 0);
+				}
+			}
+		} else {
+			if (n.getObservedVal()) {
+				return n.getCPTVal(0, 1);
+			} else {
+				return n.getCPTVal(0, 0);
+			}
+		}
+	}
 	private static Boolean[] initializeEvent(Boolean[] event, Network bNet) {
 		for (int i = 0; i < bNet.getBayesNetNodes().size(); i++) {
 			if (bNet.getBayesNetNodes().get(i).getType() == VariableType.EVIDENCE) {
