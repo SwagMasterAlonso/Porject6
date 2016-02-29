@@ -26,7 +26,8 @@ public class XxBayesianNetworkxX {
 		//printProbabilities(fileName,BayesNet);
 		assignStatus("query1.txt", BayesNet);
 		//prior_sample(BayesNet);
-		rejectionSampling(1000,BayesNet);
+		//rejectionSampling(1000,BayesNet);
+		likelihood_weighting(1000, BayesNet);
 		//		for (Node n: BayesNet.getBayesNetNodes()) {
 		//			System.out.println("Node "+n.getName()+" have type "+n.getType()+" with observed value "+n.getObservedVal());
 		//		}
@@ -303,13 +304,6 @@ public class XxBayesianNetworkxX {
 						vector[1] +=1;
 					}
 				}
-
-
-
-
-
-
-
 			}
 
 		}
@@ -319,18 +313,37 @@ public class XxBayesianNetworkxX {
 		System.out.println("Non Rejected is: " +nonRejected);
 		System.out.println("Vector 0 is: "+vector[0]);
 		System.out.println("Vector 1 is: "+vector[1]);
-
-
-
 	}
 
 
+	public static void likelihood_weighting (int numSamples, Network bNet) {
+		double sumAllWeights = 0;
+		double[] vector = {0,0};
+		WeightedSample sample;
+		for(int i = 0; i < numSamples;i++){
+			sample = weighted_sample(bNet);
+			int queryInd = queryIndex(sample.getSample(),bNet);
+			if(queryInd!= -1) {
+				if(sample.getSample()[queryInd]){
+					//vector at 0 is true, vector at 1 is false
+					vector[0] += sample.getWeight();
+					sumAllWeights += sample.getWeight();
+				} else {
+					vector[1] += sample.getWeight();
+					sumAllWeights += sample.getWeight();
+				}
+			}
+		}
+
+		vector[0] /= sumAllWeights;
+		vector[1] /= sumAllWeights;
+		System.out.println("Sum is: " +sumAllWeights);
+		System.out.println("Vector 0 is: "+vector[0]);
+		System.out.println("Vector 1 is: "+vector[1]);
+	}
 
 	private static Boolean checkConsistency(Boolean[] event, Network bNet){
-
 		for(int i = 0; i < event.length;i++){
-
-
 			if(bNet.getBayesNetNodes().get(i).getType() == VariableType.EVIDENCE){
 				if(bNet.getBayesNetNodes().get(i).getObservedVal() != event[i]){
 					return false;
@@ -339,12 +352,6 @@ public class XxBayesianNetworkxX {
 		}
 
 		return true;
-
-
-
-
-
-
 	}
 
 
