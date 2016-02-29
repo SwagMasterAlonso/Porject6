@@ -8,7 +8,7 @@ Alonso
  */
 public class XxBayesianNetworkxX {
 
-
+	static double weight;
 	public static void main(String[] args) {
 		String fileName = null;
 		//get command line arguments, there should only be 2
@@ -504,5 +504,30 @@ public class XxBayesianNetworkxX {
 			}
 		}
 	}
+
+	public static Boolean[] weighted_sample(Network bNet) {
+		Boolean[] event = new Boolean[bNet.getBayesNetNodes().size()];
+
+		weight = 1;
+		event = initializeEvent(event, bNet);
+		
+		for (Node n: bNet.getBayesNetNodes()) {
+			if (n.getType() == VariableType.EVIDENCE) {
+				
+			}
+		}
+
+		return event;
+	}
+
+	private static Boolean[] initializeEvent(Boolean[] event, Network bNet) {
+		for (int i = 0; i < bNet.getBayesNetNodes().size(); i++) {
+			if (bNet.getBayesNetNodes().get(i).getType() == VariableType.EVIDENCE) {
+				event[i] = bNet.getBayesNetNodes().get(i).getObservedVal();
+			}
+		}
+		return event;
+	}
+
 
 }
