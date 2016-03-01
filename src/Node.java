@@ -17,52 +17,72 @@ public class Node {
 	VariableType type;
 	Boolean observedVal;
 
+
+	//constructor for node class, takes a string which is its name
 	Node(String nameObj) {
-		this.edges = new ArrayList<Node>();
-		this.name = nameObj;
-		this.cpt = null;
-		this.type = null;
-		this.observedVal = null;
+		this.edges = new ArrayList<Node>(); //sets edges to a new array list
+		this.name = nameObj; //name to name obj
+		this.cpt = null; //the cpt to null initially until we set it
+		this.type = null; //type of variable to null until we set it
+		this.observedVal = null; //set the observed val ( true or false ) to null until we set it
 	}
 
+
+	//getter for observed val
 	public Boolean getObservedVal() {
 		return observedVal;
 	}
 
+
+	//setter for observed val
 	public void setObservedVal(Boolean observedVal) {
 		this.observedVal = observedVal;
 	}
+
+	//gettter for variable type
 	public VariableType getType() {
 		return type;
 	}
 
+
+	//setter for the type
 	public void setType(VariableType type) {
 		this.type = type;
 	}
 
+
+	//getter for the node name
 	public String getName() {
 		return name;
 	}
 
+
+	//getter for the list of edges
 	public List<Node> getEdges() {
 		return edges;
 	}
 
+	//getter for the cpt
 	public double[][] getCpt() {
 		return cpt;
 	}
 
+
+	//gets a specific val for the cpt 
 	public double getCPTVal(int row, int col) {
 		return this.cpt[row][col];
 	}
 
+
+	//adds a parent to our list of edgess
 	public void addParent(Node node) {
 		this.edges.add(node);
 	}
 
+
+	//creates the cpt table with the given probabilities in a 2d array
 	public void createCPT(String[] probs) {
 		int size = probs.length;
-	//	System.out.println("Size is: " + size);
 		int counter = 0;
 
 		switch(size) {
@@ -75,11 +95,8 @@ public class Node {
 			this.cpt = new double[2][2];
 			for (int i = 0; i < 2; i++) {
 				for (int j = 0; j < 2; j++) {
-//					for(int k = 0; k < size;k++){
-		//				System.out.println("Setting prob to at: " +i+" "+" "+j+" "+probs[counter]);
-						this.cpt[i][j] = Double.parseDouble(probs[counter]);
-						counter++;
-//					}
+					this.cpt[i][j] = Double.parseDouble(probs[counter]);
+					counter++;
 				}
 			}
 			break;
@@ -87,7 +104,6 @@ public class Node {
 			this.cpt = new double[4][2];
 			for (int i = 0; i < 4; i++) {
 				for (int j = 0; j < 2; j++) {
-	//				System.out.println("Setting prob to at: " +i+" "+" "+j+" "+probs[counter]);
 					this.cpt[i][j] = Double.parseDouble(probs[counter]);
 					counter++;				}
 			}
@@ -101,57 +117,4 @@ public class Node {
 	public String toString(){
 		return this.name+this.edges;
 	}
-
-
-
-
-
-
-
-	public void printCPT(String[] probs) {
-		int size = probs.length;
-	//	System.out.println("Size is: " + size);
-
-		System.out.println("Printing");
-		switch(size) {
-			case 2:
-				System.out.print(this.cpt[0][0] +" ");
-				System.out.print(this.cpt[0][1]);
-				System.out.println("");
-				break;
-			case 4:
-				//	System.out.println("in 4");
-				for (int i = 0; i < 2; i++) {
-					for (int j = 0; j < 2; j++) {
-						System.out.print(this.cpt[i][j] +" ");
-
-					}
-					System.out.println("");
-				}
-				//		System.out.println("out 4");
-
-				break;
-			case 8:
-				for (int i = 0; i < 4; i++) {
-					for (int j = 0; j < 2; j++) {
-						System.out.print(this.cpt[i][j]+" ");
-					}
-					System.out.println("");
-				}
-				break;
-			default:
-				System.out.println("This array is not valid size.");
-				break;
-		}
-	}
-
-
-
-
-
-
-
-
-
-
 }

@@ -10,16 +10,17 @@ public class XxBayesianNetworkxX {
 
 	public static void main(String[] args) {
 
-
-		//String queryFile = args[1];
+		//params for arguments, where filename is the network option, query file is the query, and the sampl
+		//holds the number of samples to run
 		String fileName = null;
 		String queryFile = null;
 		int samples =0;
+		
 		//get command line arguments, there should only be 2
 		if(args.length==3){
 			String inputString = args[0];
 			queryFile = args[1];
-			samples = Integer.parseInt(args[3]);
+			samples = Integer.parseInt(args[2]);
 			fileName = inputString;
 		} else {
 			System.out.println("Not enough arguments");
@@ -27,27 +28,28 @@ public class XxBayesianNetworkxX {
 		}
 
 
-
+		//doubles to hold the means from the tests
 		double meanRej = 0.000;
 		double meanLike = 0.000;
 
+		//doubles to hold the variances from the tests
 		double meanRejV = 0.000;
 		double meanLikeV = 0.000;
+		
+		//create our new Bayesian Network
 		Network BayesNet = new Network();
 
+		//creates all of the nodes from the file and adds them to our Bayesian Net
 		createNodes(fileName,BayesNet);
+		
+		//adds all of the cpts to the nodes in our file
 		populateNodes(fileName,BayesNet);
-		//printProbabilities(fileName,BayesNet);
+
+		//assigns the type (query, evidence, neither) to our nodes
 		assignStatus(queryFile, BayesNet);
-		//prior_sample(BayesNet);
-		//rejectionSampling(100000,BayesNet);
-		//likelihood_weighting(200, BayesNet);
-		//		for (Node n: BayesNet.getBayesNetNodes()) {
-		//			System.out.println("Node "+n.getName()+" have type "+n.getType()+" with observed value "+n.getObservedVal());
-		//		}
+		
 
-
-
+//CODE TO RUN TESTS FOR THE GIVEN SAMPLES
 		for(int i = 0; i < 10; i++){
 
 			meanRej += rejectionSampling(samples,BayesNet);
@@ -63,11 +65,7 @@ public class XxBayesianNetworkxX {
 		for(int i = 0; i < 10;i++){
 			meanRejV+= (rejectionSampling(samples,BayesNet)-meanRej)*(rejectionSampling(samples,BayesNet)-meanRej);
 			meanLikeV+= (likelihood_weighting(samples,BayesNet)-meanLike)*(likelihood_weighting(samples,BayesNet)-meanLike);
-			//meanLikeV/=n-1;
 		}
-
-		//		meanRejV/=n-1;
-		//		meanLikeV/=n-1;
 
 		meanRejV/=10;
 		meanLikeV/=10;
@@ -91,7 +89,7 @@ public class XxBayesianNetworkxX {
 
 
 
-
+//function generates all of then nodes in the given file and adds them to our bayesian network
 	public static void createNodes(String fileName,Network bayesNet){
 		String line;
 		BufferedReader br = null;
@@ -101,7 +99,7 @@ public class XxBayesianNetworkxX {
 
 				String[] fields = line.split(" ");
 				fields = line.split(":");
-				//System.out.println(fields);
+
 				String ex = fields[0];
 				//System.out.println(ex);
 
@@ -117,6 +115,8 @@ public class XxBayesianNetworkxX {
 	}
 
 
+	
+	//takes our 
 	public static void populateNodes(String fileName,Network bayesNet){
 
 		//	System.out.println("In populate");
@@ -127,34 +127,17 @@ public class XxBayesianNetworkxX {
 			//		System.out.println("Trying");
 			br = new BufferedReader(new FileReader(fileName));
 			while ((line = br.readLine()) != null) {
-				//			System.out.println("Redoing");
 				String[] fields = line.split(" ");
 				fields = line.split(":");
 				String parent = getParentData(fields[1]);
-				//	System.out.println(parent);
 				String[] parents = parent.split(" ");
-				//System.out.println(parent);
-
 				String[] probabilities = getProbs(line).split(" ");
-
 				for(String s:parents){
-
-
-					//					System.out.println("In for loop: "+s);
-
 					if(!s.equals("")){
 						getNode(fields[0],bayesNet).getEdges().add(getNode(s,bayesNet));
 					}
 				}
-
 				getNode(fields[0],bayesNet).createCPT(probabilities);
-				//				getNode(fields[0],bayesNet).printCPT(probabilities);
-
-				//				System.out.println("Out of for loop");
-				//				System.out.println("Children are");
-				//				System.out.println(getNode(fields[0],bayesNet));
-
-
 			}
 		}catch(Exception e){};
 
