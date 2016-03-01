@@ -1,13 +1,19 @@
 import java.util.ArrayList;
 import java.util.List;
-
 /**
-Alonso
+ * This class represents a node in the Bayesian Network that holds the list of
+ * parent nodes, the cpt values, and the variable type.
+ * @author jameschow, amartinez
+ *
  */
 public class Node {
+	/**The name of the node.*/
 	String name;
+	/**The list of parent nodes.*/
 	List<Node> edges;
+	/**Conditional Probability table.*/
 	double[][] cpt;
+	/**The variable type of the */
 	VariableType type;
 	Boolean observedVal;
 
