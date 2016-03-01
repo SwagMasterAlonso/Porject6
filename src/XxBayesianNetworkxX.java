@@ -15,7 +15,7 @@ public class XxBayesianNetworkxX {
 		String fileName = null;
 		String queryFile = null;
 		int samples =0;
-		
+
 		//get command line arguments, there should only be 2
 		if(args.length==3){
 			String inputString = args[0];
@@ -35,47 +35,75 @@ public class XxBayesianNetworkxX {
 		//doubles to hold the variances from the tests
 		double meanRejV = 0.000;
 		double meanLikeV = 0.000;
-		
+
 		//create our new Bayesian Network
 		Network BayesNet = new Network();
 
 		//creates all of the nodes from the file and adds them to our Bayesian Net
 		createNodes(fileName,BayesNet);
-		
+
 		//adds all of the cpts to the nodes in our file
 		populateNodes(fileName,BayesNet);
 
 		//assigns the type (query, evidence, neither) to our nodes
 		assignStatus(queryFile, BayesNet);
-		
 
-//CODE TO RUN TESTS FOR THE GIVEN SAMPLES
-		for(int i = 0; i < 10; i++){
+		double prevProbR = 0.00, prevProbL = 0.00, currentProbR = 0.00, currentProbL = 0.00;
+		double diffR = 0.0, diffL = 0.0;
+		for(int i = 0; i < 100000; i++){
 
-			meanRej += rejectionSampling(samples,BayesNet);
-			System.out.println(meanRej);
+			currentProbR = rejectionSampling(i,BayesNet);
+			diffR = currentProbR - prevProbR;
+			double answerR = diffR / (Math.abs(currentProbR));
+			if (Math.abs(answerR) < 0.00001) {
+				System.out.println("Rejection sampling converges at "+i);
+				break;
+			}
 
-			meanLike +=likelihood_weighting(samples, BayesNet);
+			prevProbR = currentProbR;
+
+		}
+		for(int i = 0; i < 100000; i++){
+
+			currentProbL =likelihood_weighting(i, BayesNet);
+			diffL = currentProbL - prevProbL;
+			double answerL = diffL/(Math.abs(currentProbL));
+			if (Math.abs(answerL) < 0.00001) {
+				System.out.println("Likelihood weighting converges at "+i);
+				break;
+			}
+			prevProbL = currentProbL;
+
 
 		}
 
-		meanRej/=10;
-		meanLike/=10;
-
-		for(int i = 0; i < 10;i++){
-			meanRejV+= (rejectionSampling(samples,BayesNet)-meanRej)*(rejectionSampling(samples,BayesNet)-meanRej);
-			meanLikeV+= (likelihood_weighting(samples,BayesNet)-meanLike)*(likelihood_weighting(samples,BayesNet)-meanLike);
-		}
-
-		meanRejV/=10;
-		meanLikeV/=10;
-
-
-
-		System.out.println("Mean of Rejection sampling is: "+meanRej);
-		System.out.println("Mean of Likelihood weighting is: "+meanLike);
-		System.out.println("Variance of Rejection sampling is: "+meanRejV);
-		System.out.println("Variance of Likelihood weighting is: "+meanLikeV);
+////CODE TO RUN TESTS FOR THE GIVEN SAMPLES
+//		for(int i = 0; i < 10; i++){
+//
+//			meanRej += rejectionSampling(samples,BayesNet);
+//			System.out.println(meanRej);
+//
+//			meanLike +=likelihood_weighting(samples, BayesNet);
+//
+//		}
+//
+//		meanRej/=10;
+//		meanLike/=10;
+//
+//		for(int i = 0; i < 10;i++){
+//			meanRejV+= (rejectionSampling(samples,BayesNet)-meanRej)*(rejectionSampling(samples,BayesNet)-meanRej);
+//			meanLikeV+= (likelihood_weighting(samples,BayesNet)-meanLike)*(likelihood_weighting(samples,BayesNet)-meanLike);
+//		}
+//
+//		meanRejV/=10;
+//		meanLikeV/=10;
+//
+//
+//
+//		System.out.println("Mean of Rejection sampling is: "+meanRej);
+//		System.out.println("Mean of Likelihood weighting is: "+meanLike);
+//		System.out.println("Variance of Rejection sampling is: "+meanRejV);
+//		System.out.println("Variance of Likelihood weighting is: "+meanLikeV);
 
 
 
@@ -115,8 +143,8 @@ public class XxBayesianNetworkxX {
 	}
 
 
-	
-	//takes our 
+
+	//takes our
 	public static void populateNodes(String fileName,Network bayesNet){
 
 		//	System.out.println("In populate");
