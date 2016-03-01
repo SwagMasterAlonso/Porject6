@@ -9,21 +9,28 @@ Alonso
 public class XxBayesianNetworkxX {
 
 	public static void main(String[] args) {
+
+
+		//String queryFile = args[1];
 		String fileName = null;
+		String queryFile = null;
+		int samples =0;
 		//get command line arguments, there should only be 2
-		if(args.length==1){
+		if(args.length==3){
 			String inputString = args[0];
+			queryFile = args[1];
+			samples = Integer.parseInt(args[3]);
 			fileName = inputString;
 		} else {
+			System.out.println("Not enough arguments");
 			System.exit(0);
 		}
 
-		
-		int n = 200;
-		
+
+
 		double meanRej = 0.000;
 		double meanLike = 0.000;
-		
+
 		double meanRejV = 0.000;
 		double meanLikeV = 0.000;
 		Network BayesNet = new Network();
@@ -31,7 +38,7 @@ public class XxBayesianNetworkxX {
 		createNodes(fileName,BayesNet);
 		populateNodes(fileName,BayesNet);
 		//printProbabilities(fileName,BayesNet);
-		assignStatus("query2.txt", BayesNet);
+		assignStatus(queryFile, BayesNet);
 		//prior_sample(BayesNet);
 		//rejectionSampling(100000,BayesNet);
 		//likelihood_weighting(200, BayesNet);
@@ -39,41 +46,41 @@ public class XxBayesianNetworkxX {
 		//			System.out.println("Node "+n.getName()+" have type "+n.getType()+" with observed value "+n.getObservedVal());
 		//		}
 
-	
-		
+
+
 		for(int i = 0; i < 10; i++){
 
-			meanRej += rejectionSampling(n,BayesNet);
+			meanRej += rejectionSampling(samples,BayesNet);
 			System.out.println(meanRej);
 
-			meanLike +=likelihood_weighting(n, BayesNet);
+			meanLike +=likelihood_weighting(samples, BayesNet);
 
 		}
-		
+
 		meanRej/=10;
 		meanLike/=10;
-		
+
 		for(int i = 0; i < 10;i++){
-			meanRejV+= (rejectionSampling(n,BayesNet)-meanRej)*(rejectionSampling(n,BayesNet)-meanRej);
-			meanLikeV+= (likelihood_weighting(n,BayesNet)-meanLike)*(likelihood_weighting(n,BayesNet)-meanLike);
+			meanRejV+= (rejectionSampling(samples,BayesNet)-meanRej)*(rejectionSampling(samples,BayesNet)-meanRej);
+			meanLikeV+= (likelihood_weighting(samples,BayesNet)-meanLike)*(likelihood_weighting(samples,BayesNet)-meanLike);
 			//meanLikeV/=n-1;
 		}
-		
-//		meanRejV/=n-1;
-//		meanLikeV/=n-1;
-		
+
+		//		meanRejV/=n-1;
+		//		meanLikeV/=n-1;
+
 		meanRejV/=10;
 		meanLikeV/=10;
 
-		
-		
+
+
 		System.out.println("Mean of Rejection sampling is: "+meanRej);
 		System.out.println("Mean of Likelihood weighting is: "+meanLike);
 		System.out.println("Variance of Rejection sampling is: "+meanRejV);
 		System.out.println("Variance of Likelihood weighting is: "+meanLikeV);
 
 
-		
+
 	}
 
 
@@ -350,9 +357,9 @@ public class XxBayesianNetworkxX {
 
 		vector[0] /= nonRejected;
 		vector[1] /= nonRejected;
-//		System.out.println("Non Rejected is: " +nonRejected);
-//		System.out.println("Vector 0 is: "+vector[0]);
-//		System.out.println("Vector 1 is: "+vector[1]);
+		//		System.out.println("Non Rejected is: " +nonRejected);
+		//		System.out.println("Vector 0 is: "+vector[0]);
+		//		System.out.println("Vector 1 is: "+vector[1]);
 		return vector[0];
 	}
 
@@ -378,9 +385,9 @@ public class XxBayesianNetworkxX {
 
 		vector[0] /= sumAllWeights;
 		vector[1] /= sumAllWeights;
-//		System.out.println("Sum is: " +sumAllWeights);
-//		System.out.println("Vector 0 is: "+vector[0]);
-//		System.out.println("Vector 1 is: "+vector[1]);
+		//		System.out.println("Sum is: " +sumAllWeights);
+		//		System.out.println("Vector 0 is: "+vector[0]);
+		//		System.out.println("Vector 1 is: "+vector[1]);
 		return vector[0];
 	}
 
@@ -406,7 +413,7 @@ public class XxBayesianNetworkxX {
 		int index = 0;
 		for (Node n: bNet.getBayesNetNodes()) {
 
-		//	System.out.println("The random number is "+rndNum);
+			//	System.out.println("The random number is "+rndNum);
 			if (n.getEdges().size() == 2) {
 				rndNum = seed.nextDouble();
 
