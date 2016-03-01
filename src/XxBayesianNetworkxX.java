@@ -18,22 +18,62 @@ public class XxBayesianNetworkxX {
 			System.exit(0);
 		}
 
-
+		
+		int n = 200;
+		
+		double meanRej = 0.000;
+		double meanLike = 0.000;
+		
+		double meanRejV = 0.000;
+		double meanLikeV = 0.000;
 		Network BayesNet = new Network();
 
 		createNodes(fileName,BayesNet);
 		populateNodes(fileName,BayesNet);
 		//printProbabilities(fileName,BayesNet);
-		assignStatus("query1.txt", BayesNet);
+		assignStatus("query2.txt", BayesNet);
 		//prior_sample(BayesNet);
-		//rejectionSampling(1000,BayesNet);
-		likelihood_weighting(1000, BayesNet);
+		//rejectionSampling(100000,BayesNet);
+		//likelihood_weighting(200, BayesNet);
 		//		for (Node n: BayesNet.getBayesNetNodes()) {
 		//			System.out.println("Node "+n.getName()+" have type "+n.getType()+" with observed value "+n.getObservedVal());
 		//		}
 
-		System.out.println("FinalN Nodes Are");
-		System.out.println(BayesNet.getBayesNetNodes());
+	
+		
+		for(int i = 0; i < 10; i++){
+
+			meanRej += rejectionSampling(n,BayesNet);
+			System.out.println(meanRej);
+
+			meanLike +=likelihood_weighting(n, BayesNet);
+
+		}
+		
+		meanRej/=10;
+		meanLike/=10;
+		
+		for(int i = 0; i < 10;i++){
+			meanRejV+= (rejectionSampling(n,BayesNet)-meanRej)*(rejectionSampling(n,BayesNet)-meanRej);
+			meanLikeV+= (likelihood_weighting(n,BayesNet)-meanLike)*(likelihood_weighting(n,BayesNet)-meanLike);
+			//meanLikeV/=n-1;
+		}
+		
+//		meanRejV/=n-1;
+//		meanLikeV/=n-1;
+		
+		meanRejV/=10;
+		meanLikeV/=10;
+
+		
+		
+		System.out.println("Mean of Rejection sampling is: "+meanRej);
+		System.out.println("Mean of Likelihood weighting is: "+meanLike);
+		System.out.println("Variance of Rejection sampling is: "+meanRejV);
+		System.out.println("Variance of Likelihood weighting is: "+meanLikeV);
+
+
+		
 	}
 
 
@@ -278,7 +318,7 @@ public class XxBayesianNetworkxX {
 	}
 
 
-	public static void rejectionSampling(int numSamples, Network bNet) {
+	public static double rejectionSampling(int numSamples, Network bNet) {
 
 		int nonRejected = 0;
 		double[] vector = {0,0};
@@ -310,13 +350,14 @@ public class XxBayesianNetworkxX {
 
 		vector[0] /= nonRejected;
 		vector[1] /= nonRejected;
-		System.out.println("Non Rejected is: " +nonRejected);
-		System.out.println("Vector 0 is: "+vector[0]);
-		System.out.println("Vector 1 is: "+vector[1]);
+//		System.out.println("Non Rejected is: " +nonRejected);
+//		System.out.println("Vector 0 is: "+vector[0]);
+//		System.out.println("Vector 1 is: "+vector[1]);
+		return vector[0];
 	}
 
 
-	public static void likelihood_weighting (int numSamples, Network bNet) {
+	public static double likelihood_weighting (int numSamples, Network bNet) {
 		double sumAllWeights = 0;
 		double[] vector = {0,0};
 		WeightedSample sample;
@@ -337,9 +378,10 @@ public class XxBayesianNetworkxX {
 
 		vector[0] /= sumAllWeights;
 		vector[1] /= sumAllWeights;
-		System.out.println("Sum is: " +sumAllWeights);
-		System.out.println("Vector 0 is: "+vector[0]);
-		System.out.println("Vector 1 is: "+vector[1]);
+//		System.out.println("Sum is: " +sumAllWeights);
+//		System.out.println("Vector 0 is: "+vector[0]);
+//		System.out.println("Vector 1 is: "+vector[1]);
+		return vector[0];
 	}
 
 	private static Boolean checkConsistency(Boolean[] event, Network bNet){
