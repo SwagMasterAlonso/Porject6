@@ -56,7 +56,8 @@ public class XxBayesianNetworkxX {
 			currentProbR = rejectionSampling(i,BayesNet);
 			diffR = currentProbR - prevProbR;
 			double answerR = diffR / (Math.abs(currentProbR));
-			if (Math.abs(answerR) < 0.00001) {
+			if (Math.abs(answerR) < 0.00001 && currentProbR!=1.0) {
+				System.out.println(currentProbR + "C D"+prevProbR);
 				System.out.println("Rejection sampling converges at "+i);
 				break;
 			}
