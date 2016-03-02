@@ -83,7 +83,6 @@ public class XxBayesianNetworkxX {
 		for(int i = 0; i < 10; i++){
 
 			meanRej += rejectionSampling(samples,BayesNet);
-			System.out.println(meanRej);
 
 			meanLike +=likelihood_weighting(samples, BayesNet);
 
@@ -101,7 +100,7 @@ public class XxBayesianNetworkxX {
 		meanLikeV/=10;
 
 
-
+		System.out.println("Running Rejection Sample with "+samples+" samples.");
 		System.out.println("Mean of Rejection sampling is: "+meanRej);
 		System.out.println("Mean of Likelihood weighting is: "+meanLike);
 		System.out.println("Variance of Rejection sampling is: "+meanRejV);
